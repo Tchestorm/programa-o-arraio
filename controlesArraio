@@ -1,0 +1,109 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.CRServo;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.CRServo;
+
+@TeleOp(name="Controles", group="TeleOp")
+
+public class Controles extends OpMode{
+
+    TcheHardware robot = new TcheHardware();
+    
+    // Definir motores
+    
+    private DcMotor tras_direita;
+    private DcMotor tras_esquerda;
+    private DcMotor frente_direita;
+    private DcMotor frente_esquerda;
+    private CRServo servo4;
+    private CRServo servo1;
+    private DcMotor motor1;
+
+    // Quando init for pressionado
+
+    @Override
+    public void init() {
+   
+   robot.init(hardwareMap);
+   telemetry.addData("Hello","World");
+    }
+
+
+    @Override
+    public void init_loop() {
+    }
+
+ 
+    // Quando start for pressionado
+ 
+    @Override
+    public void start() {
+        
+    }
+    
+    @Override
+    public void loop() {
+        
+        //Rodas mecanum
+        
+        double speedAdjust = 0.85;
+        double drive = gamepad1.left_stick_y * speedAdjust;
+        double strafe = gamepad1.right_stick_x * speedAdjust;
+        double twist = -gamepad1.left_stick_x * speedAdjust;
+        double speed = (-drive + strafe - twist);
+        double speed1 = (-drive - strafe + twist);
+        double speed2 = (drive - strafe - twist);
+        double speed3 = (drive + strafe + twist); 
+      
+        
+        robot.frente_esquerda.setPower((speed)*(speedAdjust)); 
+        robot.tras_esquerda.setPower((speed2)*(speedAdjust));
+        robot.frente_direita.setPower((speed1)*(speedAdjust));
+        robot.tras_direita.setPower((speed3)*(speedAdjust));
+        
+        // Movimento motor 1 - braço
+        
+        if (gamepad2.b == true) {
+            robot.motor1.setPower(0.90);
+           } if (gamepad2.y == true)  {
+               robot.motor1.setPower(-0.90);
+           } else if (gamepad2.y == false && gamepad2.b == false) {
+               robot.motor1.setPower(0);
+           }
+        
+       // Movimento servo4 - punho 
+        
+       if (gamepad2.a == true) {
+            robot.servo4.setPower(30);
+           } if (gamepad2.x == true)  {
+               robot.servo4.setPower(-30);
+           } else if (gamepad2.a == false && gamepad2.x == false) {
+               robot.servo4.setPower(0);
+           }
+           
+           
+        // Movimento servo1 - garra
+        
+         if (gamepad2.left_bumper == true) {
+            robot.servo1.setPower(0);
+            
+        } else {
+               robot.servo1.setPower(-0.47);
+           }
+    }
+    
+        
+     @Override public void stop(){
+     
+     }
+    }
